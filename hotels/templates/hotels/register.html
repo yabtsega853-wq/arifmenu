@@ -1,0 +1,22 @@
+﻿{% extends 'hotels/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Hotel Owner Registration{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h3 class="mb-0">Hotel Owner Registration</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-success w-100">Register Hotel</button>
+                </form>
+                <p class="mt-3 text-center">Already have an account? <a href="{% url 'admin:login' %}">Login</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+﻿{% extends 'hotels/base.html' %}
+{% block title %}{{ hotel.name }} Menu{% endblock %}
+{% block content %}
+<div class="card mb-4">
+    <div class="card-header bg-success text-white">
+        <h2>{{ hotel.name }}</h2>
+    </div>
+    <div class="card-body">
+        <p><strong>📍 Address:</strong> {{ hotel.address }}</p>
+        <p><strong>📞 Phone:</strong> <a href="tel:{{ hotel.phone }}">{{ hotel.phone }}</a></p>
+    </div>
+</div>
+<h3>Menu</h3>
+<div class="row">
+    {% for item in menu_items %}
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            {% if item.image %}
+            <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.name }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ item.name }}</h5>
+                <p class="card-text">{{ item.description|truncatechars:60 }}</p>
+                <p><strong>Price:</strong> {{ item.price }} ETB</p>
+                <p><small class="text-muted">{{ item.get_category_display }}</small></p>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <p>No menu items available at this time.</p>
+    </div>
+    {% endfor %}
+</div>
+<a href="{% url 'home' %}" class="btn btn-success">← Back to Search</a>
+{% endblock %}

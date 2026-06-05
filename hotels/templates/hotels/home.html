@@ -1,0 +1,51 @@
+﻿{% extends 'hotels/base.html' %}
+{% block title %}Home - Find Menus{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <h1 class="text-center mb-4">Find Hotels & Menus in Addis Ababa</h1>
+        <form method="get" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control form-control-lg" placeholder="Search by hotel or food name..." value="{{ query }}">
+                <button class="btn btn-success btn-lg" type="submit">Search</button>
+            </div>
+            <div class="mt-2 text-center">
+                <button type="button" id="nearbyBtn" class="btn btn-outline-success">📍 Near Me</button>
+            </div>
+            <input type="hidden" name="lat" id="lat">
+            <input type="hidden" name="lng" id="lng">
+        </form>
+    </div>
+</div>
+<div class="row">
+    {% for hotel in hotels %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{{ hotel.name }}</h5>
+                <p class="card-text text-muted">{{ hotel.address|truncatechars:80 }}</p>
+                <p><i class="bi bi-telephone"></i> {{ hotel.phone }}</p>
+                <a href="{% url 'hotel_detail' hotel.id %}" class="btn btn-success w-100">View Menu</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center">
+        <p>No hotels found. Try a different search.</p>
+    </div>
+    {% endfor %}
+</div>
+<script>
+    document.getElementById('nearbyBtn').addEventListener('click', () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                document.getElementById('lat').value = position.coords.latitude;
+                document.getElementById('lng').value = position.coords.longitude;
+                document.querySelector('form').submit();
+            }, () => alert('Location access denied or unavailable'));
+        } else {
+            alert('Geolocation not supported');
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,16 @@
+﻿{% extends 'hotels/base.html' %}
+{% block title %}Pending Approval{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 text-center">
+        <div class="card shadow">
+            <div class="card-body">
+                <h2>⏳ Registration Submitted</h2>
+                <p>Your hotel registration is pending admin approval.</p>
+                <p>You will receive an email once approved. Please check back later.</p>
+                <a href="{% url 'home' %}" class="btn btn-success">Return to Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
