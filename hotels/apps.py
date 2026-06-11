@@ -1,9 +1,9 @@
-from django.apps import AppConfig
-
+﻿from django.apps import AppConfig
 
 class HotelsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'hotels'
 
     def ready(self):
-        import hotels.signals
+        # Signals intentionally disabled – Hotel created via form only
+        pass

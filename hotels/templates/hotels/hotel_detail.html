@@ -1,36 +1,151 @@
 ﻿{% extends 'hotels/base.html' %}
-{% block title %}{{ hotel.name }} Menu{% endblock %}
+{% block title %}{{ hotel.name }} – Menu{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hotel-hero {
+        background: linear-gradient(135deg, var(--espresso), #3B1500);
+        border-radius: 16px;
+        padding: 2.2rem 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hotel-hero::after {
+        content: '🍽️';
+        position: absolute;
+        right: 2rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 5rem;
+        opacity: 0.1;
+    }
+
+    .hotel-hero h2 {
+        font-family: 'Playfair Display', serif;
+        color: #fff;
+        font-size: clamp(1.5rem, 3vw, 2.2rem);
+        margin-bottom: 0.75rem;
+    }
+
+    .hotel-hero .detail-line {
+        font-size: 0.88rem;
+        color: rgba(255, 255, 255, 0.65);
+    }
+
+    .hotel-hero .detail-line a {
+        color: var(--saffron);
+        text-decoration: none;
+    }
+
+    .hotel-hero .detail-line a:hover {
+        text-decoration: underline;
+    }
+
+    .hotel-hero .detail-line+.detail-line {
+        margin-top: 0.3rem;
+    }
+
+    .menu-item-card .card-body {
+        padding: 1.2rem;
+    }
+
+    .item-name {
+        font-family: 'Playfair Display', serif;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--espresso);
+        margin-bottom: 0.3rem;
+    }
+
+    .item-desc {
+        font-size: 0.8rem;
+        color: var(--text-muted-custom);
+        margin-bottom: 0.6rem;
+        min-height: 2.4em;
+    }
+
+    .item-price {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--forest);
+    }
+
+    .item-category {
+        font-size: 0.75rem;
+        color: var(--text-muted-custom);
+        margin-top: 0.25rem;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.88rem;
+        font-weight: 500;
+        color: var(--forest);
+        text-decoration: none;
+        margin-top: 2rem;
+        border: 1.5px solid var(--border-warm);
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        transition: all 0.18s;
+        background: #fff;
+    }
+
+    .back-link:hover {
+        background: var(--forest);
+        color: #fff;
+        border-color: var(--forest);
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="card mb-4">
-    <div class="card-header bg-success text-white">
+<!-- Hotel header -->
+<div class="hotel-hero">
+    <div class="position-relative">
         <h2>{{ hotel.name }}</h2>
-    </div>
-    <div class="card-body">
-        <p><strong>📍 Address:</strong> {{ hotel.address }}</p>
-        <p><strong>📞 Phone:</strong> <a href="tel:{{ hotel.phone }}">{{ hotel.phone }}</a></p>
+        <p class="detail-line">📍 {{ hotel.address }}</p>
+        <p class="detail-line">📞 <a href="tel:{{ hotel.phone }}">{{ hotel.phone }}</a></p>
     </div>
 </div>
-<h3>Menu</h3>
-<div class="row">
+
+<!-- Menu section -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <span class="section-label">Menu</span>
+    <span class="text-muted-warm" style="font-size:0.82rem;">{{ menu_items|length }} item{{ menu_items|length|pluralize
+        }}</span>
+</div>
+
+<div class="row g-3">
     {% for item in menu_items %}
-    <div class="col-md-4 mb-3">
-        <div class="card h-100">
+    <div class="col-sm-6 col-lg-4">
+        <div class="card menu-item-card h-100">
             {% if item.image %}
             <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.name }}">
             {% endif %}
             <div class="card-body">
-                <h5 class="card-title">{{ item.name }}</h5>
-                <p class="card-text">{{ item.description|truncatechars:60 }}</p>
-                <p><strong>Price:</strong> {{ item.price }} ETB</p>
-                <p><small class="text-muted">{{ item.get_category_display }}</small></p>
+                <p class="item-name">{{ item.name }}</p>
+                <p class="item-desc">{{ item.description|truncatechars:80 }}</p>
+                <p class="item-price">{{ item.price }} <small
+                        style="font-weight:500; font-size:0.78rem; color:var(--text-muted-custom);">ETB</small></p>
+                <p class="item-category">{{ item.get_category_display }}</p>
             </div>
         </div>
     </div>
     {% empty %}
     <div class="col-12">
-        <p>No menu items available at this time.</p>
+        <div class="card" style="border-style:dashed; border-color:var(--border-warm); background:var(--mist);">
+            <div class="card-body text-center py-5">
+                <div style="font-size:2rem; margin-bottom:0.6rem;">🍴</div>
+                <p class="text-muted-warm">No menu items available at this time.</p>
+            </div>
+        </div>
     </div>
     {% endfor %}
 </div>
-<a href="{% url 'home' %}" class="btn btn-success">← Back to Search</a>
+
+<a href="{% url 'home' %}" class="back-link">← Back to Search</a>
 {% endblock %}

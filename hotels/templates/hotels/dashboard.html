@@ -1,50 +1,200 @@
 ﻿{% extends 'hotels/base.html' %}
 {% block title %}Owner Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dash-header {
+        background: linear-gradient(135deg, var(--espresso), #3B1500);
+        border-radius: 16px;
+        padding: 2rem 2rem 1.8rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .dash-header::after {
+        content: '🍽️';
+        position: absolute;
+        right: 1.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 4rem;
+        opacity: 0.12;
+    }
+
+    .dash-header h2 {
+        font-family: 'Playfair Display', serif;
+        color: #fff;
+        font-size: 1.7rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .dash-header p {
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 0.88rem;
+        margin: 0;
+    }
+
+    .hotel-info-card {
+        border-left: 4px solid var(--saffron);
+        border-radius: 12px;
+        padding: 1.5rem 1.8rem;
+        background: #fff;
+        box-shadow: 0 2px 12px rgba(26, 10, 0, 0.06);
+        margin-bottom: 2rem;
+    }
+
+    .hotel-info-card h4 {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.25rem;
+        color: var(--espresso);
+        margin-bottom: 0.75rem;
+    }
+
+    .info-row {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+        font-size: 0.875rem;
+        color: var(--text-muted-custom);
+    }
+
+    .info-row strong {
+        color: var(--espresso);
+    }
+
+    .menu-section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.4rem;
+    }
+
+    /* Menu item cards */
+    .menu-card .card-body {
+        padding: 1.2rem;
+    }
+
+    .menu-card .item-name {
+        font-family: 'Playfair Display', serif;
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 0.3rem;
+        color: var(--espresso);
+    }
+
+    .menu-card .item-desc {
+        font-size: 0.8rem;
+        color: var(--text-muted-custom);
+        margin-bottom: 0.6rem;
+        min-height: 2.2em;
+    }
+
+    .menu-card .item-price {
+        font-weight: 700;
+        color: var(--forest);
+        font-size: 0.95rem;
+    }
+
+    .menu-card .item-meta {
+        font-size: 0.75rem;
+        color: var(--text-muted-custom);
+        margin-top: 0.3rem;
+    }
+
+    .avail-yes {
+        color: #059669;
+        font-weight: 600;
+    }
+
+    .avail-no {
+        color: #B91C1C;
+        font-weight: 600;
+    }
+
+    .menu-card .card-footer {
+        background: var(--mist);
+        border-top: 1px solid var(--border-warm);
+        border-radius: 0 0 14px 14px;
+        padding: 0.75rem 1.2rem;
+        display: flex;
+        gap: 0.5rem;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Welcome, {{ user.username }}!</h2>
-    <a href="{% url 'add_menu_item' %}" class="btn btn-success">+ Add Menu Item</a>
+<!-- Dashboard header -->
+<div class="dash-header">
+    <h2>Welcome back, {{ user.username }}!</h2>
+    <p>Manage your hotel and menu items below.</p>
 </div>
-<div class="card mb-4">
-    <div class="card-header bg-success text-white">
-        <h4>{{ hotel.name }}</h4>
-    </div>
-    <div class="card-body">
-        <p><strong>Address:</strong> {{ hotel.address }}</p>
-        <p><strong>Phone:</strong> {{ hotel.phone }}</p>
-        <p><strong>Status:</strong> 
+
+<!-- Hotel info -->
+<div class="hotel-info-card">
+    <h4>{{ hotel.name }}</h4>
+    <div class="info-row">
+        <span>📍 <strong>{{ hotel.address }}</strong></span>
+        <span>📞 <strong>{{ hotel.phone }}</strong></span>
+        <span>
+            Status:&nbsp;
             {% if hotel.is_approved %}
-                <span class="badge bg-success">Approved</span>
+            <span class="badge-approved">✓ Approved</span>
             {% else %}
-                <span class="badge bg-warning">Pending Approval</span>
+            <span class="badge-pending">⏳ Pending Approval</span>
             {% endif %}
-        </p>
+        </span>
     </div>
 </div>
-<h3>Menu Items</h3>
-<div class="row">
+
+<!-- Menu items section -->
+<div class="menu-section-header">
+    <div>
+        <span class="section-label">Menu Items</span>
+        <p class="text-muted-warm mb-0" style="font-size:0.82rem;">{{ menu_items|length }} item{{
+            menu_items|length|pluralize }} on your menu</p>
+    </div>
+    <a href="{% url 'add_menu_item' %}" class="btn btn-saffron">+ Add Item</a>
+</div>
+
+<div class="row g-3">
     {% for item in menu_items %}
-    <div class="col-md-4 mb-3">
-        <div class="card h-100">
+    <div class="col-sm-6 col-lg-4">
+        <div class="card menu-card h-100">
             {% if item.image %}
             <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.name }}">
             {% endif %}
             <div class="card-body">
-                <h5 class="card-title">{{ item.name }}</h5>
-                <p class="card-text">{{ item.description|truncatechars:60 }}</p>
-                <p><strong>Price:</strong> {{ item.price }} ETB</p>
-                <p><strong>Category:</strong> {{ item.get_category_display }}</p>
-                <p><strong>Available:</strong> {% if item.available %}✅ Yes{% else %}❌ No{% endif %}</p>
-                <div class="d-flex gap-2">
-                    <a href="{% url 'edit_menu_item' item.id %}" class="btn btn-sm btn-outline-success">Edit</a>
-                    <a href="{% url 'delete_menu_item' item.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this item?')">Delete</a>
-                </div>
+                <p class="item-name">{{ item.name }}</p>
+                <p class="item-desc">{{ item.description|truncatechars:70 }}</p>
+                <p class="item-price">{{ item.price }} ETB</p>
+                <p class="item-meta">
+                    {{ item.get_category_display }} &nbsp;·&nbsp;
+                    {% if item.available %}
+                    <span class="avail-yes">Available</span>
+                    {% else %}
+                    <span class="avail-no">Unavailable</span>
+                    {% endif %}
+                </p>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'edit_menu_item' item.id %}"
+                    class="btn btn-outline-forest btn-sm flex-fill text-center">Edit</a>
+                <a href="{% url 'delete_menu_item' item.id %}"
+                    class="btn btn-sm btn-outline-danger flex-fill text-center"
+                    onclick="return confirm('Delete this item?')">Delete</a>
             </div>
         </div>
     </div>
     {% empty %}
     <div class="col-12">
-        <p>No menu items yet. <a href="{% url 'add_menu_item' %}">Add your first item</a></p>
+        <div class="card" style="border-style:dashed; border-color: var(--border-warm); background: var(--mist);">
+            <div class="card-body text-center py-5">
+                <div style="font-size:2.5rem; margin-bottom:0.75rem;">🍴</div>
+                <p class="text-muted-warm mb-3">Your menu is empty. Add your first item to get started.</p>
+                <a href="{% url 'add_menu_item' %}" class="btn btn-forest">+ Add First Item</a>
+            </div>
+        </div>
     </div>
     {% endfor %}
 </div>

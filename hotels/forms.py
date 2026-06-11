@@ -19,7 +19,7 @@ class OwnerRegistrationForm(UserCreationForm):
         user = super().save(commit=False)
         if commit:
             user.save()
-            hotel = Hotel.objects.create(
+            Hotel.objects.create(
                 owner=user,
                 name=self.cleaned_data['hotel_name'],
                 address=self.cleaned_data['address'],

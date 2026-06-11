@@ -1,11 +1,11 @@
 ﻿{% extends 'hotels/base.html' %}
 {% load crispy_forms_tags %}
-{% block title %}Register Your Hotel{% endblock %}
+{% block title %}Owner Login{% endblock %}
 
 {% block extra_css %}
 <style>
     .auth-wrap {
-        max-width: 460px;
+        max-width: 440px;
         margin: 2.5rem auto;
     }
 
@@ -93,15 +93,16 @@
     <div class="auth-card">
         <div class="auth-header">
             <p class="eyebrow">AddisMenu</p>
-            <h3>Register Your Hotel</h3>
+            <h3>Hotel Owner Login</h3>
         </div>
         <div class="auth-body">
-            <form method="post" enctype="multipart/form-data">
+            <form method="post">
                 {% csrf_token %}
                 {{ form|crispy }}
-                <button type="submit" class="btn btn-forest">Create Account →</button>
+                <button type="submit" class="btn btn-forest">Sign In →</button>
             </form>
-            <p class="auth-footer-text">Already have an account? <a href="{% url 'login' %}">Sign in here</a></p>
+            <p class="auth-footer-text">Don't have an account? <a href="{% url 'register' %}">Register your hotel</a>
+            </p>
         </div>
     </div>
 </div>
