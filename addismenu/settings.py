@@ -1,11 +1,13 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-default--key-for-dev')
 DEBUG = os.getenv('DEBUG', 'TRUE') == 'TRUE'
 ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -50,14 +52,10 @@ WSGI_APPLICATION = 'addismenu.wsgi.application'
 
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'addismenu',
-        'USER': 'postgres',
-        'PASSWORD': os.getenv('DB_PASSWORD', ''),   # <-- CHANGE THIS
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(
+        default='postgresql://postgres:password@localhost:5432/addismenu',
+        conn_max_age=600
+    )
 }
 AUTH_PASSWORD_VALIDATORS = [
     {
